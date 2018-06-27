@@ -1,0 +1,87 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Home
+  # Location required to calculate the time the sun rises and sets
+  latitude: -34.8515
+  longitude: -56.1885
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 34
+  # metric for Metric, imperial for Imperial
+  unit_system: metric
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: America/Montevideo
+  # Customization file
+  customize: !include customize.yaml
+
+
+mqtt:
+ broker: 192.168.1.31
+
+light:
+ - platform: mqtt
+   name: Living
+   state_topic: "thehamptons/wall/1/status"
+   command_topic: "thehamptons/wall/1/control"
+   payload_ on: "ON"
+   payload_off: "OFF"
+ - platform: mqtt
+   name: Cocina
+   state_topic: "thehamptons/wall/2/status"
+   command_topic: "thehamptons/wall/2/control"
+   payload_on: "ON"
+   payload_off: "OFF"
+ - platform: mqtt
+   name: Cuarto
+   state_topic: "thehamptons/wall/0/status"
+   command_topic: "thehamptons/wall/0/control"
+   payload_on: "ON"
+   payload_off: "OFF"
+  
+                                                      
+
+  
+# Enables the frontend
+frontend:
+
+# Enables configuration UI
+config:
+
+ios:
+
+http:
+  # Secrets are defined in the file secrets.yaml
+   api_password: !secret http_password
+  # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+  # base_url: example.duckdns.org:8123
+
+# Checks for available updates
+# Note: This component will send some information about your system to
+# the developers to assist with development of Home Assistant.
+# For more information, please see:
+# https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
+updater:
+  # Optional, allows Home Assistant developers to focus on popular components.
+  # include_used_components: true
+
+# Discover some devices automatically
+discovery:
+
+# Enables support for tracking state changes over time
+history:
+
+# View all events in a logbook
+logbook:
+
+# Enables a map showing the location of tracked devices
+map:
+
+# Track the sun
+sun:
+
+# Weather prediction
+sensor:
+  - platform: yr
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml

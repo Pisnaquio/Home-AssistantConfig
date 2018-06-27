@@ -2,5 +2,6 @@
 !*.yaml
 !scenes
 !.gitignore
+!.homeassistant
 secrets.yaml
 known_devices.yaml

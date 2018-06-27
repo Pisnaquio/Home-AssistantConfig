@@ -1,0 +1,15 @@
+media_player.comedor:
+  config_entry_id: 317c8f6dbfac407ab54583433c516135
+  name:
+  platform: cast
+  unique_id: 26659379-a53b-ca74-55e1-91d5cdcc1683
+sensor.pisnaquioiphone_battery_level:
+  config_entry_id:
+  name:
+  platform: ios
+  unique_id: level_iphone_de_ignacio
+sensor.pisnaquioiphone_battery_state:
+  config_entry_id:
+  name:
+  platform: ios
+  unique_id: state_iphone_de_ignacio
