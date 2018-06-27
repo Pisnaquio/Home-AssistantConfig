@@ -10,3 +10,16 @@ Install:
 - git
 
 Clone Git repo for personal config.
+
+
+CONFIGURATIONS
+
+lights:
+- cocina
+- living
+- cuarto
+
+Cellphones
+Chromecast:
+- Comedor
+- Cuarto
