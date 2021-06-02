@@ -1,0 +1,260 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: PanChes Kingdom
+  # Location required to calculate the time the sun rises and sets
+  latitude: -34.91365862499837
+  longitude: -56.189088374376304
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 18
+  # metric for Metric, imperial for Imperial
+  unit_system: metric
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: America/Montevideo
+  # Customization file
+  customize: !include customize.yaml
+  whitelist_external_dirs:
+    - /config/Indoor
+
+# Enables the frontend
+frontend:
+  themes: !include_dir_merge_named themes
+
+# Enables mobille app
+mobile_app:
+
+
+# Enables configuration UI
+config:
+
+#http:
+  # Secrets are defined in the file secrets.yaml
+  # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+  #base_url: https://panches.duckdns.org
+  #ssl_certificate: /ssl/fullchain.pem
+  #ssl_key: /ssl/privkey.pem
+  #ip_ban_enabled: true
+  #login_attempts_threshold: 3
+
+# Checks for available updates
+# Note: This component will send some information about your system to
+# the developers to assist with development of Home Assistant.
+# For more information, please see:
+# https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
+updater:
+  include_used_components: true
+  # Optional, allows Home Assistant developers to focus on popular components.
+
+history:
+
+recorder:
+  db_url: mysql://panches:Campeondelsiglo@127.0.0.1/homeassistant
+
+logbook:
+
+#lovelace:
+#  mode: yaml
+
+panel_iframe:
+  tasmoadmin:
+    title: TasmoAdmin
+    icon: mdi:dip-switch
+    url: https://panchestar.duckdns.org:9541
+
+# Sensors
+sensor:
+  # Uptime check to see last restart.
+  - platform: uptime
+    unit_of_measurement: hours
+  # Cert expiry sensor for letsencrypt.
+  - platform: cert_expiry
+    host: panchestar.duckdns.org
+
+# Sun angle sensor.
+  - platform: template
+    sensors:
+      solar_angle:
+        friendly_name: "Sun angle"
+        unit_of_measurement: 'degrees'
+        value_template: "{{ state_attr('sun.sun', 'elevation') }}"
+      sunrise:
+        value_template: "{{ state_attr('sun.sun', 'next_rising') }}"
+#Sensor de Temperatura
+  - platform: mqtt
+    name: Temperatura
+    state_topic: "tele/Riego/SENSOR"
+    qos: 1
+    value_template: '{{ value_json.SI7021.Temperature }}'
+    unit_of_measurement : °C
+#Sensor de Humedad
+  - platform: mqtt
+    name: Humedad
+    state_topic: "tele/Riego/SENSOR"
+    qos: 1
+    value_template: '{{ value_json.SI7021.Humidity }}'
+    unit_of_measurement : '%'
+#Sensor de Rocio
+  - platform: mqtt
+    name: Rocio
+    state_topic: "tele/Riego/SENSOR"
+    qos: 1
+    value_template: '{{ value_json.SI7021.DewPoint }}'
+    unit_of_measurement : °C
+
+  #Sensores de voltage
+  #sensor sonoff_pow_amps:
+  - platform: mqtt
+    name: Sodio Current Amps
+    state_topic: "stat/SodioIndoor/STATUS10"
+    value_template: "{{ value_json.StatusSNS.ENERGY.Current }}"
+    unit_of_measurement: 'amps'
+  #sensor sonoff_pow_watts:
+  - platform: mqtt
+    name: Sodio Current Power Usage
+    state_topic: "stat/SodioIndoor/STATUS10"
+    value_template: "{{ value_json.StatusSNS.ENERGY.Power }}"
+    unit_of_measurement: 'watts'
+  #sensor sonoff_pow_kwh_today:
+  - platform: mqtt
+    name: Sodio Todays Power
+    state_topic: "stat/SodioIndoor/STATUS10"
+    value_template: "{{ value_json.StatusSNS.ENERGY.Today }}"
+    unit_of_measurement: 'kWh'
+  #sensor sonoff_pow_volts:
+  - platform: mqtt
+    name: Sodio Current Voltage
+    state_topic: "stat/SodioIndoor/STATUS10"
+    value_template: "{{ value_json.StatusSNS.ENERGY.Voltage }}"
+    unit_of_measurement: 'volts'
+  #sensor sonoff_pow_kwh_yesterday:
+  - platform: mqtt
+    name: Sodio Yesterdays Power
+    state_topic: "stat/SodioIndoor/STATUS10"
+    value_template: "{{ value_json.StatusSNS.ENERGY.Yesterday }}"
+    unit_of_measurement: 'kWh'
+  #sensor sonoff_pow_kwh_total:
+  - platform: mqtt
+    name: Sodio Total Power
+    state_topic: "stat/SodioIndoor/STATUS10"
+    value_template: "{{ value_json.StatusSNS.ENERGY.Total }}"
+    unit_of_measurement: 'kWh'
+
+
+
+# Discover some devices automatically
+discovery:
+
+# Enables a map showing the location of tracked devices
+map:
+
+# iOS
+ios:
+
+cloud:
+
+
+# MQTT Broker
+mqtt:
+  broker: 192.168.1.31
+  discovery: true
+
+# Ligth
+light:
+# Luces de la casa
+  - platform: mqtt
+    name: Cuarto
+    command_topic: "thehamptons/wall/0/control"
+    payload_on: "ON"
+    payload_off: "OFF"
+    state_topic: "thehamptons/wall/0/status"
+
+  - platform: mqtt
+    name: Living
+    command_topic: "thehamptons/wall/1/control"
+    payload_on: "ON"
+    payload_off: "OFF"
+    state_topic: "thehamptons/wall/1/status"
+
+  - platform: mqtt
+    name: Cocina
+    command_topic: "thehamptons/wall/2/control"
+    payload_on: "ON"
+    payload_off: "OFF"
+    state_topic: "thehamptons/wall/2/status"
+
+  - platform: mqtt
+    name: Portatil
+    command_topic: "cmnd/LamparaLiving/power"
+    state_topic: "stat/LamparaLiving/POWER"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    retain: true
+# Luces indoor y esquejera
+  - platform: mqtt
+    name: Esquejes
+    command_topic: "cmnd/Esquejes/power"
+    state_topic: "stat/Esquejes/POWER"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    retain: true
+
+  - platform: mqtt
+    name: Esquejes2
+    command_topic: "cmnd/Esquejes2/power"
+    state_topic: "stat/Esquejes2/POWER"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    retain: true
+
+  - platform: mqtt
+    name: SodioIndoor
+    command_topic: "cmnd/SodioIndoor/power"
+    state_topic: "stat/SodioIndoor/POWER"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    retain: true
+# Riego y Ventiladores
+switch:
+  - platform: mqtt
+    name: Riego
+    command_topic: "cmnd/Riego/power"
+    state_topic: "stat/Riego/POWER"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    retain: true
+
+  - platform: mqtt
+    name: Extractor
+    command_topic: "cmnd/Extractor/power"
+    state_topic: "stat/Extractor/POWER"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    retain: true
+
+
+camera:
+  - platform: ffmpeg
+    input: rtsp://admin:Campeondelsiglo@192.168.1.3/live/ch00_0 # sd
+    name: SD
+
+# Siri
+homekit:
+  filter:
+    include_domains:
+      - light
+
+# Amazon Echo example configuration.yaml entry
+emulated_hue:
+  host_ip: 192.168.1.31
+  exposed_domains:
+    - light
+
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
